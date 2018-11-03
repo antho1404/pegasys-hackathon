@@ -8,7 +8,7 @@
 			},
 			{
 				"name": "status",
-				"type": "uint8"
+				"type": "uint256"
 			},
 			{
 				"name": "result",
