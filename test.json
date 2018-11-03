@@ -1,0 +1,21 @@
+{
+  "methodAbi": {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "name": "execute",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  "data": {
+    "data": "{\"from\":\"contact@mesg.com\",\"to\":\"anthony@mesg.com\",\"subject\":\"hello from Ethereum\",\"text\":\"Welcome to the revolution\"}"
+  },
+  "contractAddress": "0x3625c727dff8b587e122b0bd12de21f96395ae0f",
+  "privateKey": "0xd3bfd5b597a0ad48afa716a3526c382dee33eb5f3788f03cb4c84701d47aa7ee"
+}
