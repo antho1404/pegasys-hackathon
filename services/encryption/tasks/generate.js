@@ -1,8 +1,8 @@
 const crypto = require('crypto')
 
-const generate = (inputs, { success, error }) => {
+module.exports = (inputs, { success, error }) => {
   try {
-    crypto.generateKeyPair('rsa', {
+    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 4096,
       publicKeyEncoding: {
         type: 'spki',
@@ -12,20 +12,14 @@ const generate = (inputs, { success, error }) => {
         type: 'pkcs8',
         format: 'pem',
         cipher: 'aes-256-cbc',
-        passphrase: ''
+        passphrase: inputs.passphrase
       }
-    }, (err, publicKey, privateKey) => {
-      if (err) {
-        return error({ message: err.toString() })
-      }
-      return success({
-        publicKey,
-        privateKey
-      })
+    })
+    return success({
+      publicKey,
+      privateKey
     })
   } catch (e) {
     return error({ message: e.toString() })
   }
 }
-
-exports.default = generate

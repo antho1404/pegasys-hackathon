@@ -1,18 +1,15 @@
 const crypto = require('crypto')
 
-const decrypt = (inputs, { success, error }) => {
+module.exports = (inputs, { success, error }) => {
   try {
+    const buf = Buffer.from(inputs.encryptedData, 'base64')
     return success({
-      data: crypto.privateDecrypt(
-        {
-          key: inputs.privateKey,
-          passphrase: inputs.passphrase,
-        },
-        b
-      ).toString()
+      data: crypto.privateDecrypt({
+        key: inputs.privateKey,
+        passphrase: inputs.passphrase
+      }, buf).toString()
     })
   } catch (e) {
     return error({ message: e.toString() })
   }
 }
-exports.default = decrypt

@@ -1,6 +1,6 @@
 const crypto = require('crypto')
 
-const encrypt = (inputs, { success }) => {
+module.exports = (inputs, { success, error }) => {
   try {
     return success({
       encryptedData: crypto.publicEncrypt(
@@ -12,5 +12,3 @@ const encrypt = (inputs, { success }) => {
     return error({ message: e.toString() })
   }
 }
-
-exports.default = encrypt
