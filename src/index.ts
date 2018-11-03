@@ -4,13 +4,17 @@ if (!process.env.SENDGRID_API_KEY
   || !process.env.ETHEREUM_ID
   || !process.env.API_ID
   || !process.env.PRIVATE_KEY
-  || !process.env.CONTRACT_ADDRESS) throw "load env variables"
+  || !process.env.CONTRACT_ADDRESS
+  || !process.env.ENCRYPT_ID) throw "load env variables"
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
 const ETHEREUM_ID = process.env.ETHEREUM_ID
+const ENCRYPT_ID = process.env.ENCRYPT_ID
 const API_ID = process.env.API_ID
-const PRIVATE_KEY = process.env.PRIVATE_KEY
+const ETH_PRIVATE_KEY = process.env.PRIVATE_KEY
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+const PASSPHRASE = process.env.PASSPHRASE
 const API_CONTRACT_ABI = require('../services/api-contract/build/contracts/Api.json').abi
 const API_CALL_ABI = API_CONTRACT_ABI.filter((x: any) => x.type === 'event' && x.name === 'APIexecute')[0]
 const SUBMIT_VERIFICATION_ABI = API_CONTRACT_ABI.filter((x: any) => x.type === 'function' && x.name === 'submitVerification')[0]
@@ -24,6 +28,7 @@ MESG.whenEvent({
 }, {
   serviceID: ETHEREUM_ID,
   taskKey: 'decodeLog',
+  tags: ['decodelog'],
   inputs: (eventKey: string, eventData: Object) => ({
     ...eventData,
     abi: API_CALL_ABI
@@ -33,12 +38,30 @@ MESG.whenEvent({
 MESG.whenResult({
   serviceID: ETHEREUM_ID,
   taskKey: 'decodeLog',
-  outputKey: 'success'
+  outputKey: 'success',
+  tagFilters: ['decodelog']
+}, {
+  serviceID: ENCRYPT_ID,
+  taskKey: 'decrypt',
+  tags: ['decrypt'],
+  inputs: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => ({
+    privateKey: PRIVATE_KEY,
+    passphrase: PASSPHRASE,
+    encryptedData: outputData.decodedData.data
+  })
+})
+
+MESG.whenResult({
+  serviceID: ENCRYPT_ID,
+  taskKey: 'decrypt',
+  outputKey: 'success',
+  tagFilters: ['decrypt']
 }, {
   serviceID: API_ID,
   taskKey: 'send',
   inputs: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => {
-    const data = JSON.parse(outputData.decodedData.data)
+    const data = JSON.parse(outputData.data)
+    console.log(data)
     return {
       apiKey: SENDGRID_API_KEY,
       from: data.from || 'contact@mesg.com',
@@ -59,7 +82,7 @@ MESG.whenResult({
 //   inputs: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => ({
 //     methodAbi: SUBMIT_VERIFICATION_ABI,
 //     contractAddress: CONTRACT_ADDRESS,
-//     privateKey: PRIVATE_KEY,
+//     privateKey: ETH_PRIVATE_KEY,
 //     data: {
 //       status: outputData.status.toString()
 //     }
