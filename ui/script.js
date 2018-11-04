@@ -123,9 +123,11 @@ const ABI = [
   const ids = {}
 
   const appendLog = text => {
-    const li = document.createElement("li")
-    li.innerText = text
-    document.querySelector("ul").appendChild(li)
+    const div = document.createElement("div")
+    div.innerText = text
+    div.classList.add('alert')
+    div.classList.add('alert-success')
+    document.querySelector(".results").appendChild(div)
   }
 
   const contract = web3.eth.contract(ABI).at(CONTRACT_ADDRESS)
