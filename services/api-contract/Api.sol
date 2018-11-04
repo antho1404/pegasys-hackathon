@@ -10,10 +10,10 @@ contract Api {
 
     address public owner;
     uint256 public price;
-    mapping (bytes32=>Execution) executions;
+    mapping (bytes32=>Execution) public executions;
 
-    event ExecutionCreated(bytes32 indexed id, string data);
-    event ExecutionChanged(bytes32 indexed id);
+    event ExecutionCreated(bytes32 indexed id, string data, address sender);
+    event ExecutionChanged(bytes32 indexed id, address indexed sender, uint256 status, string result);
 
     constructor(uint256 _price) public {
         owner = msg.sender;
@@ -34,7 +34,7 @@ contract Api {
             result: "",
             sender: msg.sender
         });
-        emit ExecutionCreated(_id, data);
+        emit ExecutionCreated(_id, data, msg.sender);
         return _id;
     }
 
@@ -52,6 +52,6 @@ contract Api {
             exec.sender.transfer(price);
         }
 
-        emit ExecutionChanged(id);
+        emit ExecutionChanged(id, exec.sender, uint(exec.status), exec.result);
     }
 }
