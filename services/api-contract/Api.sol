@@ -25,7 +25,7 @@ contract Api {
     }
 
     function execute(string data) public payable returns (bytes32 id) {
-        require(msg.value >= price, "Not enough value");
+        require(msg.value == price, "Value is not equal to price");
         bytes32 _id = keccak256(
             abi.encodePacked(msg.sender, block.number, data)
         );
@@ -38,12 +38,12 @@ contract Api {
         return _id;
     }
 
-    function editExecution(bytes32 id, Status status, string result) public onlyOwner {
+    function editExecution(bytes32 id, uint256 status, string result) public onlyOwner {
         Execution storage exec = executions[id];
-        exec.status = status;
+        exec.status = Status(status);
         exec.result = result;
 
-        if (status == Status.Success) {
+        if (exec.status == Status.Success) {
             // transfer price to owner
             owner.transfer(price);
         }
