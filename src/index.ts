@@ -29,10 +29,13 @@ MESG.whenEvent({
   serviceID: ETHEREUM_ID,
   taskKey: 'decodeLog',
   tags: ['decodelog'],
-  inputs: (eventKey: string, eventData: Object) => ({
-    ...eventData,
-    abi: API_CALL_ABI
-  }),
+  inputs: (eventKey: string, eventData: Object) => {
+    console.log("Decoding log")
+    return {
+      ...eventData,
+      abi: API_CALL_ABI
+    }
+  },
 })
 
 MESG.whenResult({
@@ -44,11 +47,14 @@ MESG.whenResult({
   serviceID: ENCRYPT_ID,
   taskKey: 'decrypt',
   tags: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => [...tags, `id=${outputData.decodedData.id}`, 'decrypt'],
-  inputs: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => ({
-    privateKey: PRIVATE_KEY,
-    passphrase: PASSPHRASE,
-    encryptedData: outputData.decodedData.data
-  })
+  inputs: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => {
+    console.log("Decrypting data")
+    return {
+      privateKey: PRIVATE_KEY,
+      passphrase: PASSPHRASE,
+      encryptedData: outputData.decodedData.data
+    }
+  }
 })
 
 MESG.whenResult({
@@ -61,6 +67,7 @@ MESG.whenResult({
   taskKey: 'send',
   tags: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => [...tags, 'send'],
   inputs: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => {
+    console.log("Sending email")
     const data = JSON.parse(outputData.data)
     return {
       apiKey: SENDGRID_API_KEY,
@@ -81,6 +88,7 @@ MESG.whenResult({
   serviceID: ETHEREUM_ID,
   taskKey: 'executeSmartContractMethod',
   inputs: (outputKey: string, outputData: any, taskKey: string, tags: string[]) => {
+    console.log("Sending proof on smart contract")
     const id = tags
       .filter(x => x.startsWith('id='))
       .map(x => x.split('=')[1])
