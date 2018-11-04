@@ -1,3 +1,9 @@
+# PEGASYS Hackathon
+
+## _Monetize your API_
+
+# Installation
+
 ```
 mesg-core service dev services/encryption
 ```
