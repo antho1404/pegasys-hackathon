@@ -1,0 +1,66 @@
+name: On demand payment
+steps:
+  - type: trigger
+    instance:
+      src: https://github.com/mesg-foundation/service-ethereum-contract
+      env:
+        - PROVIDER_ENDPOINT=$(env:PROVIDER_ENDPOINT)
+        - CONTRACT_ADDRESS="$(env:CONTRACT_ADDRESS)"
+        - CONTRACT_ABI="$(env:CONTRACT_ABI)
+    eventKey: event
+  - type: filter
+    conditions:
+      name: 'ExecutionCreated'
+  - type: task
+    key: conversion
+    instance:
+      src: https://github.com/mesg-foundation/service-js-function
+    taskKey: execute
+    inputs:
+      code: > 
+        module.exports = value => ({
+          name: value.name
+          blockHash: value.blockHash
+          blockNumber: value.blockNumber
+          transactionHash: value.transactionHash
+          transactionIndex: value.transactionIndex
+          data: JSON.parse(value.data)
+        })
+      inputs:
+        name: { key: name }
+        blockHash: { key: blockHash }
+        blockNumber: { key: blockNumber }
+        transactionHash: { key: transactionHash }
+        transactionIndex: { key: transactionIndex }
+        data: { key: data }
+  - type: task
+    instance:
+      src: https://github.com/mesg-foundation/service-email-sendgrid
+      env:
+        - SENDGRID_API_KEY=$(env:SENDGRID_API_KEY)
+    taskKey: send
+    inputs:
+      from: result.data.from
+      to: result.data.to
+      subject: result.data.subject
+      text: result.data.text
+  - type: task
+    key: convert-string
+    instance:
+      src: https://github.com/mesg-foundation/service-js-function
+    taskKey: execute
+    inputs:
+      code: 'module.exports = value => value.status.toString()'
+      inputs:
+        status: {key: status}
+  - tasks: tasks
+      instance:
+        src: https://github.com/mesg-foundation/service-ethereum-contract
+      taskKey: execute
+        inputs:
+          method: editExecution
+          privateKey: $(env:PRIVATE_KEY)
+          inputs:
+            id: { stepKey: conversion ,key: result.data.id }
+            status: 1,
+            result: result

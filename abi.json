@@ -1,0 +1,111 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "id",
+				"type": "bytes32"
+			},
+			{
+				"name": "status",
+				"type": "uint256"
+			},
+			{
+				"name": "result",
+				"type": "string"
+			}
+		],
+		"name": "editExecution",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "price",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "data",
+				"type": "string"
+			}
+		],
+		"name": "execute",
+		"outputs": [
+			{
+				"name": "id",
+				"type": "bytes32"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "id",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "data",
+				"type": "string"
+			}
+		],
+		"name": "ExecutionCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "id",
+				"type": "bytes32"
+			}
+		],
+		"name": "ExecutionChanged",
+		"type": "event"
+	}
+]
