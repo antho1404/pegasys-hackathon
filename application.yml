@@ -59,7 +59,7 @@ steps:
       taskKey: execute
         inputs:
           method: editExecution
-          privateKey: $(env:PRIVATE_KEY)
+          privateKey: "$(env:PRIVATE_KEY)"
           inputs:
             id: { stepKey: conversion ,key: result.data.id }
             status: 1,
