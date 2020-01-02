@@ -6,7 +6,7 @@ steps:
       env:
         - PROVIDER_ENDPOINT=$(env:PROVIDER_ENDPOINT)
         - CONTRACT_ADDRESS="$(env:CONTRACT_ADDRESS)"
-        - CONTRACT_ABI="$(env:CONTRACT_ABI)
+        - CONTRACT_ABI=$(env:CONTRACT_ABI)
     eventKey: event
   - type: filter
     conditions:
@@ -17,7 +17,7 @@ steps:
       src: https://github.com/mesg-foundation/service-js-function
     taskKey: execute
     inputs:
-      code: > 
+      code: >
         module.exports = value => ({
           name: value.name
           blockHash: value.blockHash
