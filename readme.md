@@ -35,8 +35,8 @@ mesg-cli process:dev application.yml \
     --env PROVIDER_ENDPOINT=$PROVIDER_ENDPOINT \
     --env PRIVATE_KEY=$PRIVATE_KEY \
     --env SENDGRID_API_KEY=$SENDGRID_API_KEY \
-    --env CONTRACT_ABI=$CONTRACT_ABI
-    --env CONTRACT_ADDRESS=$CONTRACT_ADDRESS \
+    --env CONTRACT_ABI=$CONTRACT_ABI \
+    --env CONTRACT_ADDRESS=$CONTRACT_ADDRESS
 ```
 
 ## Start the website
