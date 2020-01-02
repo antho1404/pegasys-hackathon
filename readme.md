@@ -6,7 +6,7 @@
 
 ## Install MESG Engine
 
-Make sure that [MESG Core](https://github.com/mesg-foundation/core) is installed and running on your computer.
+Make sure that [MESG Engine](https://github.com/mesg-foundation/engine) is installed and running on your computer.
 You can run the following command to install and start the Core:
 
 ```bash
