@@ -53,7 +53,7 @@ steps:
       code: 'module.exports = value => value.status.toString()'
       inputs:
         status: {key: status}
-  - tasks: tasks
+  - type: task
       instance:
         src: https://github.com/mesg-foundation/service-ethereum-contract
       taskKey: execute
