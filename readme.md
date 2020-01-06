@@ -41,6 +41,19 @@ mesg-cli process:dev application.yml \
 
 ## Start the website
 
+replace `data` at the `script.js` file in `ui folder`:
+
+```js
+  const data = JSON.stringify({
+    from: '__FROM_EMAIL_HERE__',
+    to: '__TO_EMAIL_HERE__',
+    subject: '__SUBJECT_HERE__',
+    text: '__TEXT_HERE__'
+  })
+```
+
+To run the website:
+
 ```bash
 docker build ui -t on-demand-payment
 docker run -d -p 8080:80 on-demand-payment
