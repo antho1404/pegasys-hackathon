@@ -1,8 +1,0 @@
-export SENDGRID_API_KEY=
-export ETHEREUM_ID=
-export API_ID=
-export ETH_PRIVATE_KEY=
-export CONTRACT_ADDRESS=
-export ENCRYPT_ID=
-export PRIVATE_KEY=`cat private.pem`
-export PASSPHRASE=

@@ -1,0 +1,85 @@
+name: On demand payment
+steps:
+  - type: trigger
+    instance:
+      src: https://github.com/mesg-foundation/service-ethereum-contract
+      env:
+        - PROVIDER_ENDPOINT=$(env:PROVIDER_ENDPOINT)
+        - CONTRACT_ADDRESS=$(env:CONTRACT_ADDRESS)
+        - CONTRACT_ABI=$(env:CONTRACT_ABI)
+        - BLOCK_CONFIRMATIONS=0
+    eventKey: event
+  - type: task
+    key: savetx
+    instance:
+      src: https://github.com/mesg-foundation/service-js-function
+    taskKey: 'execute'
+    inputs:
+      code: 'module.export = inputs => inputs'
+      inputs:
+        data: { key: data }
+        name: { key: name }
+  # this service will remove when filter is fixed.
+  - type: task
+    instance: 
+      src: https://github.com/blackinno/mesg-service-filter
+    taskKey: filter
+    inputs:
+      data: { key: result.name }
+      predicate: 'eq'
+      value: 'ExecutionCreated'
+  - type: filter
+    conditions:
+      match: 'TRUE'
+  # - type: task
+  #   instance:
+  #     src: https://github.com/antho1404/mesg-service-encryption
+  #   taskKey: 'decrypt'
+  #   inputs:
+  #     privateKey: '$(env:ENCRYPTION_KEY)'
+  #     passphrase: '$(env:PASSPHRASE)'
+  #     encryptedData: { key: result.data }
+  # outputs:
+  #   data: string
+  - type: task
+    instance:
+      src: https://github.com/mesg-foundation/service-js-function
+    taskKey: 'execute'
+    inputs:
+      code: 'module.export = JSON.parse'
+      inputs: { stepKey: savetx, key: result.data.data }
+  - type: task
+    instance:
+      src: https://github.com/mesg-foundation/service-email-sendgrid
+      env:
+        - SENDGRID_API_KEY=$(env:SENDGRID_API_KEY)
+    taskKey: send
+    inputs:
+      from: { key: result.from }
+      to: { key: result.to }
+      subject: { key: result.subject }
+      text: { key: result.text }
+  - type: task
+    key: convert-string
+    instance:
+      src: https://github.com/mesg-foundation/service-js-function
+    taskKey: execute
+    inputs:
+      code: 'module.exports = value => value.toString()'
+      inputs: { key: status }
+  - type: task
+    instance:
+      src: https://github.com/mesg-foundation/service-ethereum-contract
+      env:
+        - PROVIDER_ENDPOINT=$(env:PROVIDER_ENDPOINT)
+        - CONTRACT_ADDRESS=$(env:CONTRACT_ADDRESS)
+        - CONTRACT_ABI=$(env:CONTRACT_ABI)
+        - BLOCK_CONFIRMATIONS=0
+    taskKey: execute
+    inputs:
+      method: editExecution
+      privateKey: '$(env:PRIVATE_KEY)'
+      inputs:
+        - { stepKey: savetx, key: result.data.id } # id
+        - 1 # status
+        - { stepKey: 'convert-string', key: result } # result
